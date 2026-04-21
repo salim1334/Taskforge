@@ -2,8 +2,22 @@ name: flutter_ui
 description: A standalone Dart task management example.
 version: 1.0.0
 
+flutter:
+  uses-material-design: true
+
 environment:
   sdk: '>=3.0.0 <4.0.0'
 dependencies:
   flutter:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.13.1
+  flutter_test:
+    sdk: flutter
+  provider: ^6.1.5+1
+
+# App Icon
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/task_icon.png"
