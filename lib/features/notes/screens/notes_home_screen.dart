@@ -17,40 +17,37 @@ class NotesHomeScreen extends StatefulWidget {
 }
 
 class _NotesHomeScreenState extends State<NotesHomeScreen> {
-  final titleController = TextEditingController();
-  final descController = TextEditingController();
+  final searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   Future<void> openAddNoteScreen() async {
     final message = await Navigator.push<String>(
       context,
-      MaterialPageRoute(
-        builder: (_) => const AddNoteScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const AddNoteScreen()),
     );
-
     showResultMessage(message);
   }
 
   Future<void> openEditNoteScreen(int noteId) async {
     final message = await Navigator.push<String>(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditNoteScreen(id: noteId),
-      ),
+      MaterialPageRoute(builder: (_) => EditNoteScreen(id: noteId)),
     );
-
     showResultMessage(message);
   }
 
   void showResultMessage(String? message) {
     if (message == null || !mounted) return;
-
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
     showSuccessSnackBar(context, message);
   }
 
-  void deleteNote(Note note, int index) {
+  void deleteNote(Note note) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -64,11 +61,8 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
           TextButton(
             onPressed: () {
               context.read<NotesProvider>().deleteNoteById(note.id);
-
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
               showSuccessSnackBar(context, "Note deleted successfully");
-
               Navigator.pop(context);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
@@ -79,51 +73,77 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
   }
 
   @override
-  void dispose() {
-    titleController.dispose();
-    descController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final provider = context.read<NotesProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
       ),
-      body: Consumer<NotesProvider>(
-        builder: (context, provider, child) {
-          final notes = provider.notes;
-
-          if (notes.isEmpty) {
-            return EmptyState(
-              message: 'No tasks yet',
-              subMessage: 'Tap + to add a task',
-              icon: Icons.inbox,
-            );
-          }
-
-          return Column(
-            children: [
-              // Search input
-              
-              const SizedBox(height: 20),
-              ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (context, index) {
-              final note = notes[index];
-
-              return NoteCard(
-                title: note.title,
-                content: note.content,
-                onDelete: () => deleteNote(note, index),
-                onEdit: () => openEditNoteScreen(note.id),
-              );
-            },
+      body: Column(
+        children: [
+          // Search input UI
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                provider.setSearchQuery(value);
+              },
+              decoration: InputDecoration(
+                hintText: 'Search notes...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: searchController.text.isNotEmpty ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    searchController.clear();
+                    provider.setSearchQuery('');
+                  },
+                ) : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.grey[100],
+              ),
+            ),
           ),
-            ],
-          );
-        },
+
+          Expanded(
+            child: Consumer<NotesProvider>(
+              builder: (context, notesProvider, child) {
+                final allNotes = notesProvider.notes;
+                final filteredNotes = notesProvider.filteredNotes;
+
+                if (allNotes.isEmpty) {
+                  return EmptyState(
+                    message: 'No tasks yet',
+                    subMessage: 'Tap + to add a task',
+                    icon: Icons.inbox,
+                  );
+                }
+
+                if (filteredNotes.isEmpty) {
+                  return Center(
+                    child: Text('No notes found matching => ${searchController.text}'),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: filteredNotes.length,
+                  itemBuilder: (context, index) {
+                    final note = filteredNotes[index];
+                    return NoteCard(
+                      note: note,
+                      onDelete: () => deleteNote(note),
+                      onEdit: () => openEditNoteScreen(note.id),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: openAddNoteScreen,

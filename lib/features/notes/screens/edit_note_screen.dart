@@ -29,6 +29,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
 
       titleController.text = note.title;
       descController.text = note.content;
+      // createdAt preserved on update
     });
   }
 
