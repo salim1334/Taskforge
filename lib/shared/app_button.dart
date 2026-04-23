@@ -5,26 +5,29 @@ class AppButton extends StatelessWidget {
     super.key,
     this.onPressed,
     this.text = 'Press Me',
-    this.color = Colors.blue,
+    this.color,
     this.fontSize = 16,
-    this.textColor = Colors.white,
+    this.textColor,
     this.paddingHorizontal = 20,
     this.paddingVertical = 10,
   });
 
   final String text;
-  final Color color;
+  final Color? color;
   final double fontSize;
-  final Color textColor;
+  final Color? textColor;
   final double paddingHorizontal;
   final double paddingVertical;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: color,
+        backgroundColor: color ?? theme.colorScheme.primary,
+        foregroundColor: textColor ?? theme.colorScheme.onPrimary,
         padding: EdgeInsets.symmetric(
           horizontal: paddingHorizontal,
           vertical: paddingVertical,
@@ -36,10 +39,7 @@ class AppButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: fontSize,
-        ),
+        style: TextStyle(fontSize: fontSize),
       ),
     );
   }

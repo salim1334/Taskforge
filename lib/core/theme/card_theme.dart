@@ -21,8 +21,12 @@ class AppTheme {
     scaffoldBackgroundColor: Colors.grey.shade100,
     cardTheme: CardThemeData(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       color: Colors.white,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
     ),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
@@ -50,11 +54,22 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.blue, width: 2),
       ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(fontSize: 16, color: Colors.black87),
       bodyMedium: TextStyle(fontSize: 14, color: Colors.black87),
       titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      bodySmall: TextStyle(fontSize: 12, color: Colors.grey),
     ),
   );
 
@@ -76,8 +91,12 @@ class AppTheme {
     scaffoldBackgroundColor: Colors.grey.shade900,
     cardTheme: CardThemeData(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       color: Colors.grey.shade800,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
     ),
     appBarTheme: AppBarTheme(
       centerTitle: true,
@@ -105,12 +124,22 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.blue, width: 2),
       ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(fontSize: 16, color: Colors.white),
       bodyMedium: TextStyle(fontSize: 14, color: Colors.white70),
-      titleLarge: TextStyle(
-          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+      titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+      bodySmall: TextStyle(fontSize: 12, color: Colors.white54),
     ),
   );
 

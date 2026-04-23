@@ -46,7 +46,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
 
     if (title.isEmpty || desc.isEmpty) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      showErrorSnackBar(context, "Please enter title and description");
+      SnackBarHelper.showError(context, "Please enter title and description");
       return;
     }
 

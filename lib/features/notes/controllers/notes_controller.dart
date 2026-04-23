@@ -3,20 +3,20 @@ import '../models/note.dart';
 class NotesController {
   final List<Note> _notes = [
     Note(
-      id: 1, 
-      title: 'Flutter', 
+      id: 1,
+      title: 'Flutter',
       content: 'Learn clean architecture',
       createdAt: DateTime.now(),
     ),
     Note(
-      id: 2, 
-      title: 'Backend', 
+      id: 2,
+      title: 'Backend',
       content: 'Connect Node.js API',
       createdAt: DateTime.now(),
     ),
     Note(
-      id: 3, 
-      title: 'Firebase', 
+      id: 3,
+      title: 'Firebase',
       content: 'Push notifications',
       createdAt: DateTime.now(),
     ),
@@ -28,10 +28,11 @@ class NotesController {
 
   List<Note> get filteredNotes {
     if (_searchQuery.isEmpty) return _notes;
-    return _notes.where((note) => 
-      note.title.toLowerCase().contains(_searchQuery) || 
-      note.content.toLowerCase().contains(_searchQuery)
-    ).toList();
+    return _notes
+        .where((note) =>
+            note.title.toLowerCase().contains(_searchQuery) ||
+            note.content.toLowerCase().contains(_searchQuery))
+        .toList();
   }
 
   Note getNoteById(int id) => _notes.firstWhere((note) => note.id == id);
@@ -44,7 +45,7 @@ class NotesController {
           title: title,
           content: content,
           createdAt: DateTime.now(),
-        ));
+        ),);
   }
 
   void updateNote(int id, String title, String content) {
@@ -52,8 +53,8 @@ class NotesController {
     if (index != -1) {
       final oldNote = _notes[index];
       _notes[index] = Note(
-        id: id, 
-        title: title, 
+        id: id,
+        title: title,
         content: content,
         createdAt: oldNote.createdAt,
       );

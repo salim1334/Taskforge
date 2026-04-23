@@ -30,7 +30,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
 
     if (title.isEmpty || desc.isEmpty) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      showErrorSnackBar(context, "Please enter title and description");
+      SnackBarHelper.showError(context, "Please enter title and description");
       return;
     }
 
@@ -47,7 +47,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   @override
   Widget build(BuildContext context) {
     final loading = context.watch<LoadingProvider>().isLoading;
-    print(loading);
 
     return Scaffold(
       appBar: AppBar(title: const Text("Add Note")),
@@ -57,22 +56,27 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: "Title"),
+              decoration: const InputDecoration(
+                labelText: "Title",
+                prefixIcon: Icon(Icons.title),
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: descController,
-              decoration: const InputDecoration(labelText: "Content"),
+              decoration: const InputDecoration(
+                labelText: "Content",
+                prefixIcon: Icon(Icons.description),
+              ),
+              maxLines: 5,
             ),
             const SizedBox(height: 20),
             AppButton(
               onPressed: loading ? null : saveNote,
               text: loading ? "Loading..." : "Add Note",
-              color: Colors.green,
               fontSize: 18,
               paddingHorizontal: 30,
               paddingVertical: 15,
-              textColor: Colors.white,
             ),
           ],
         ),

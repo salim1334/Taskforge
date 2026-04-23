@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui/core/theme/app_theme.dart';
 import 'package:flutter_ui/features/notes/models/note.dart';
 import 'package:flutter_ui/features/notes/providers/notes_provider.dart';
+import 'package:flutter_ui/features/notes/providers/theme_provider.dart';
 import 'package:flutter_ui/features/notes/screens/add_note_screen.dart';
 import 'package:flutter_ui/features/notes/screens/edit_note_screen.dart';
 import 'package:flutter_ui/shared/empty_state.dart';
@@ -44,7 +46,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
   void showResultMessage(String? message) {
     if (message == null || !mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    showSuccessSnackBar(context, message);
+    SnackBarHelper.showSuccess(context, message);
   }
 
   void deleteNote(Note note) {
@@ -62,7 +64,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
             onPressed: () {
               context.read<NotesProvider>().deleteNoteById(note.id);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              showSuccessSnackBar(context, "Note deleted successfully");
+              SnackBarHelper.showSuccess(context, "Note deleted successfully");
               Navigator.pop(context);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
@@ -79,6 +81,18 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: Icon(themeProvider.isDarkMode
+                    ? Icons.light_mode
+                    : Icons.dark_mode),
+                onPressed: () => AppTheme.switchTheme(context),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -92,19 +106,23 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Search notes...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: searchController.text.isNotEmpty ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    searchController.clear();
-                    provider.setSearchQuery('');
-                  },
-                ) : null,
+                hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                prefixIcon: Icon(Icons.search,
+                    color: Theme.of(context).iconTheme.color),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear,
+                            color: Theme.of(context).iconTheme.color),
+                        onPressed: () {
+                          searchController.clear();
+                          provider.setSearchQuery('');
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
               ),
             ),
           ),
@@ -125,7 +143,8 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
 
                 if (filteredNotes.isEmpty) {
                   return Center(
-                    child: Text('No notes found matching => ${searchController.text}'),
+                    child: Text(
+                        'No notes found matching => ${searchController.text}'),
                   );
                 }
 
