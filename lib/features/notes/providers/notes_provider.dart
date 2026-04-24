@@ -26,10 +26,10 @@ class NotesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteNote(Note note) {
-    _controller.deleteNote(note);
-    notifyListeners();
-  }
+  // void deleteNote(Note note) {
+  //   _controller.deleteNote(note);
+  //   notifyListeners();
+  // }
 
   void setSearchQuery(String query) {
     _controller.setSearchQuery(query);

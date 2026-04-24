@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui/core/theme/app_theme.dart';
 import 'package:flutter_ui/features/notes/models/note.dart';
 import 'package:flutter_ui/features/notes/providers/notes_provider.dart';
 import 'package:flutter_ui/features/notes/providers/theme_provider.dart';
@@ -45,7 +44,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
 
   void showResultMessage(String? message) {
     if (message == null || !mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    
     SnackBarHelper.showSuccess(context, message);
   }
 
@@ -63,7 +62,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
           TextButton(
             onPressed: () {
               context.read<NotesProvider>().deleteNoteById(note.id);
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              
               SnackBarHelper.showSuccess(context, "Note deleted successfully");
               Navigator.pop(context);
             },
@@ -76,7 +75,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<NotesProvider>();
+    final provider = context.watch<NotesProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -88,7 +87,7 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
                 icon: Icon(themeProvider.isDarkMode
                     ? Icons.light_mode
                     : Icons.dark_mode),
-                onPressed: () => AppTheme.switchTheme(context),
+                onPressed: () => context.read<ThemeProvider>().toggleTheme(),
               );
             },
           ),

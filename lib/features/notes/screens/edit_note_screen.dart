@@ -24,12 +24,11 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<NotesProvider>();
+      final provider = context.watch<NotesProvider>();
       final note = provider.getNoteById(widget.id!);
 
       titleController.text = note.title;
       descController.text = note.content;
-      // createdAt preserved on update
     });
   }
 
@@ -45,7 +44,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     final desc = descController.text;
 
     if (title.isEmpty || desc.isEmpty) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       SnackBarHelper.showError(context, "Please enter title and description");
       return;
     }

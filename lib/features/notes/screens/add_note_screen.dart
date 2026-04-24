@@ -29,7 +29,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final desc = descController.text;
 
     if (title.isEmpty || desc.isEmpty) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       SnackBarHelper.showError(context, "Please enter title and description");
       return;
     }

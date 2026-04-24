@@ -37,6 +37,7 @@ class NoteCard extends StatelessWidget {
               note.content,
               style: theme.textTheme.bodyMedium,
               maxLines: 2,
+              softWrap: true,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
