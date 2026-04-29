@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui/features/notes/providers/loading_provider.dart';
-import 'package:flutter_ui/features/notes/providers/theme_provider.dart';
-import 'package:provider/provider.dart';
-
-import 'core/theme/app_theme.dart';
-import 'features/notes/providers/notes_provider.dart';
-import 'features/notes/screens/notes_home_screen.dart';
+import 'package:flutter_ui/core/theme/app_theme.dart';
+import 'package:flutter_ui/features/notes/controllers/loading_controller.dart';
+import 'package:flutter_ui/features/notes/controllers/notes_controller.dart';
+import 'package:flutter_ui/features/notes/controllers/theme_controller.dart';
+import 'package:flutter_ui/features/notes/screens/notes_home_screen.dart';
+import 'package:get/get.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NotesProvider()),
-        ChangeNotifierProvider(create: (_) => LoadingProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  Get.put(ThemeController());
+  Get.put(NotesController());
+  Get.put(LoadingController());
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,17 +19,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return MaterialApp(
-          title: 'Flutter Notes App',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: const NotesHomeScreen(),
-        );
-      },
+    final themeController = Get.find<ThemeController>();
+
+    return Obx(
+      () => GetMaterialApp(
+        title: 'Flutter Notes App',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode:
+            themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
+        home: const NotesHomeScreen(),
+      ),
     );
   }
 }

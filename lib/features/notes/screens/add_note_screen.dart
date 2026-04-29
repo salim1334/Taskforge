@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui/features/notes/providers/loading_provider.dart';
+import 'package:flutter_ui/features/notes/controllers/loading_controller.dart';
+import 'package:flutter_ui/features/notes/controllers/notes_controller.dart';
 import 'package:flutter_ui/shared/app_button.dart';
 import 'package:flutter_ui/utils/snackbar_helper.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/notes_provider.dart';
+import 'package:get/get.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -17,6 +16,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   final titleController = TextEditingController();
   final descController = TextEditingController();
 
+  final _loading = Get.find<LoadingController>();
+  final _notes = Get.find<NotesController>();
+
   @override
   void dispose() {
     titleController.dispose();
@@ -27,28 +29,26 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   Future<void> saveNote() async {
     final title = titleController.text;
     final desc = descController.text;
+    final status = false;
 
     if (title.isEmpty || desc.isEmpty) {
-      SnackBarHelper.showError(context, "Please enter title and description");
+      SnackBarHelper.showError(context, 'Please enter title and description');
       return;
     }
 
-    await context.read<LoadingProvider>().runWithLoading(() async {
-      await Future.delayed(const Duration(seconds: 2));
-
-      context.read<NotesProvider>().addNote(title, desc);
+    await _loading.runWithLoading(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _notes.addNote(title, desc, status);
     });
 
     if (!mounted) return;
-    Navigator.pop(context, "Note added successfully");
+    Navigator.pop(context, 'Note added successfully');
   }
 
   @override
   Widget build(BuildContext context) {
-    final loading = context.watch<LoadingProvider>().isLoading;
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Note")),
+      appBar: AppBar(title: const Text('Add Note')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -56,7 +56,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             TextField(
               controller: titleController,
               decoration: const InputDecoration(
-                labelText: "Title",
+                labelText: 'Title',
                 prefixIcon: Icon(Icons.title),
               ),
             ),
@@ -64,18 +64,20 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             TextField(
               controller: descController,
               decoration: const InputDecoration(
-                labelText: "Content",
+                labelText: 'Content',
                 prefixIcon: Icon(Icons.description),
               ),
               maxLines: 5,
             ),
             const SizedBox(height: 20),
-            AppButton(
-              onPressed: loading ? null : saveNote,
-              text: loading ? "Loading..." : "Add Note",
-              fontSize: 18,
-              paddingHorizontal: 30,
-              paddingVertical: 15,
+            Obx(
+              () => AppButton(
+                onPressed: _loading.isLoading.value ? null : saveNote,
+                text: _loading.isLoading.value ? 'Loading...' : 'Add Note',
+                fontSize: 18,
+                paddingHorizontal: 30,
+                paddingVertical: 15,
+              ),
             ),
           ],
         ),
